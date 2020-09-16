@@ -1,0 +1,68 @@
+FROM python
+# FROM python:3.7.3-alpine3.9
+RUN mkdir /work/
+WORKDIR /work/
+COPY ./src/requirements.txt /work/requirements.txt
+COPY ./src/start.sh /work/start.sh
+RUN pip install -r requirements.txt
+# COPY ./src/ /work/
+# EXPOSE 5555 5555
+# ENV FLASK_APP=server.py
+# RUN chmod +x /work/server.py
+# RUN chmod +x /work/start.sh
+# CMD /work/start.sh ; sleep infinity
+
+# CMD flask run -h 0.0.0.0 -p 5555
+# FROM python:3.7.3-alpine3.9
+# RUN mkdir /work/
+# WORKDIR /work/
+# COPY ./src/requirements.txt /work/requirements.txt
+# RUN pip install -r requirements.txt
+# COPY ./src/ /work/
+# EXPOSE 5555 5555
+# # ENV FLASK_APP=server.py
+# RUN chmod +x /work/server.py
+# RUN chmod +x /work/start.sh
+# # CMD ["./server.py","./start sh"]
+# CMD flask run -h 0.0.0.0 -p 5555
+
+
+
+# FROM python:3.7.3-alpine3.9
+# RUN mkdir /work/
+# RUN mkdir /strt/
+# WORKDIR /work/
+# COPY ./src/ /strt/
+# RUN pip install -r /strt/requirements.txt
+
+# # EXPOSE 5555 5555
+# # ENV FLASK_APP=server.py
+# # RUN chmod +x /work/server.py
+# RUN chmod +x /strt/start.sh
+# CMD /strt/start.sh ; sleep infinity
+# # CMD flask run -h 0.0.0.0 -p 5555
+
+
+
+
+
+
+
+
+# FROM ubuntu:bionic
+# WORKDIR /usr/src/app
+# COPY ./start.sh
+# RUN apt update
+# && apt install -y netcat
+# && chmod +x /usr/src/app/start.sh
+# CMD [“./start sh”]
+
+
+
+# Рядом с докерфайлом положи файл start.sh с содержимым
+# !#/usr/bin/sh
+
+# tail -f /dev/null
+
+# И собери свой образ
+# docker build -t my_ubuntu .

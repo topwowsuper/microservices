@@ -1,0 +1,93 @@
+version: '3.1'
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: animals
+      MYSQL_USER: root
+      MYSQL_PASSWORD: pass
+    ports:
+      - 3306:3306
+    volumes:
+      - /home/$USER/mysqldb:/var/lib/mysql
+      - ./mysql/:/docker-entrypoint-initdb.d/
+    networks: 
+      - "dev"
+
+
+  mysql-setup:
+    image: mysql
+    depends_on:
+      - db
+    volumes:
+      - ./mysql/:/docker-entrypoint-initdb.d/
+    networks: 
+      - "dev"
+    command: >
+      /bin/sh -c "
+        apk add --no-cache curl
+        echo 'waiting for mysql'
+        sleep 5s
+        mysql -h db -u root -ppass animals < /docker-entrypoint-initdb.d/setup.sql"
+
+        
+  python:
+    image: my_python
+    ports:
+      - "5555:5555"
+    restart: always
+    volumes:
+      - ./python/src:/work
+    networks: 
+      - "dev"
+    command: python3 server.py
+
+
+  prometheus:
+    image: prom/prometheus:v2.2.1
+    volumes:
+        - ./prometheus/prom/:/etc/prometheus/
+    ports:
+      - 9090:9090
+    command: --config.file=/etc/prometheus/prometheus.yml
+    restart: always
+    networks: 
+      - "dev"
+
+  grafana:
+    image: grafana/grafana:5.0.4
+    restart: always
+    environment:
+      - GF_AUTH_BASIC_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./grafana/grafana-data:/grafana
+    ports:
+      - 3000:3000
+    networks: 
+      - "dev"
+
+  grafana-dashboards:
+    image: alpine:3.10
+    depends_on:
+      - grafana
+    volumes:
+      - ./grafana/grafana-data:/grafana
+    networks: 
+      - "dev"
+    command: >
+      /bin/sh -c "
+        apk add --no-cache curl
+        echo 'waiting for grafana'
+        sleep 5s
+        cd /grafana
+        curl --request POST http://grafana:3000/api/datasources --header 'Content-Type: application/json' -d @datasources.json
+        curl --request POST http://grafana:3000/api/dashboards/db --header 'Content-Type: application/json' -d @dashboard.json"
+
+networks:
+  dev:
+    driver: "bridge"

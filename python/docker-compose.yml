@@ -1,0 +1,51 @@
+# version: "3.4"
+#     python: #docker run -it -v ${PWD}:/work -w /work -p 5003:5000 aimvector/python:1.0.0 /bin/sh
+#         image: my_server
+#         # working_dir: /work      #comment out for build.target:prod
+#         # entrypoint: /bin/sh     #comment out for build.target:prod
+#         # stdin_open: true        #comment out for build.target:prod
+#         # tty: true               #comment out for build.target:prod
+#         # volumes:
+#         #   - ./src/:/work
+#         ports:
+#           - 5555:5555
+
+version: '2'
+services:
+  python:
+    image: my_server
+    ports:
+      - "5555:5555"
+    restart: always
+    networks: 
+      - "dev"
+networks:
+  dev:
+    driver: "bridge"
+# version: '3.1'
+
+#   db:
+#     image: mysql
+#     command: --default-authentication-plugin=mysql_native_password
+#     restart: always
+#     environment:
+#       MYSQL_ROOT_PASSWORD: pass
+#       MYSQL_DATABASE: test
+#       MYSQL_USER: root
+#     ports:
+#       - 3306:3306
+#     volumes:
+#       - /home/osboxes/Public/mysqldb:/var/lib/mysql
+
+# FROM python:3.7.3-alpine3.9
+# RUN mkdir /work/
+# WORKDIR /work/
+# COPY ./src/requirements.txt /work/requirements.txt
+# RUN pip install -r requirements.txt
+# COPY ./src/ /work/
+# EXPOSE 5555 5555
+# ENV FLASK_APP=server.py
+# RUN chmod +x /work/server.py
+# RUN chmod +x /work/start.sh
+# # CMD ["./server.py","./start sh"]
+# CMD flask run -h 0.0.0.0 -p 5555
